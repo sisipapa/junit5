@@ -2,24 +2,25 @@ package com.sisipapa.junit.repository;
 
 import com.sisipapa.junit.domain.Item;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
-import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 //@TestPropertySource(locations = "classpath:application-test.yml")
 //@ActiveProfiles("test")
-@DataJpaTest
+//@DataJpaTest
+@ExtendWith(MockitoExtension.class)
 class ItemRepositoryTest {
 
 //    @Autowired
 //    private ItemRepository itemRepository;
 
+//    @MockBean
     @Mock
     private ItemRepository itemRepository;
 
@@ -29,7 +30,7 @@ class ItemRepositoryTest {
         // given
         final Item item = Item.builder().name("item1").description("아이템1입니다.").build();
 
-        given(itemRepository.save(any())).willReturn(item);
+        when(itemRepository.save(any())).thenReturn(item);
 
         // when
         final Item saveItem = itemRepository.save(new Item());
