@@ -15,7 +15,8 @@ import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 public class ItemProductServiceTest {
@@ -35,7 +36,6 @@ public class ItemProductServiceTest {
         // given
         Item mockItem = Item.builder().name("test-item1").description("test-item1-description").build();
         when(itemRepository.save(mockItem)).thenReturn(Item.builder().idx(5L).name("test-item1").description("test-item1-description").build());
-//        given(itemRepository.save(item)).willReturn(Item.builder().idx(5L).name("test-item1").description("test-item1-description").build());
 
         // when
         Item resultItem = itemProductService.itemSave(mockItem);
