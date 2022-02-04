@@ -15,10 +15,9 @@ import org.springframework.test.web.servlet.ResultActions;
 import java.util.List;
 
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.verify;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -50,7 +49,7 @@ public class ItemProductControllerTest {
                 .name("신상품1")
                 .description("신상품1 설명")
                 .build();
-        given(itemProductService.itemSave(any())).willReturn(mockItem);
+        when(itemProductService.itemSave(any())).thenReturn(mockItem);
 
         // when
         final ResultActions actions =
@@ -82,7 +81,7 @@ public class ItemProductControllerTest {
                 ,ProductDto.of().idx(3L).name("페이크 삭스").description("페이크 삭스 설명").build()
                 ,ProductDto.of().idx(4L).name("우산").description("우산 설명").build()
         );
-        given(itemProductService.findAll()).willReturn(mockProducts);
+        when(itemProductService.findAll()).thenReturn(mockProducts);
 
         // when
         final ResultActions actions =
@@ -104,4 +103,91 @@ public class ItemProductControllerTest {
                 .andDo(print());
     }
 
+    @Test
+    void findById() throws Exception {
+        // given
+        Long idx = 1l;
+        when(itemProductService.findByIdx(idx)).thenReturn(ProductDto.of().idx(1L).name("베베숲 물티슈").description("베베숲 물티슈 설명").build());
+
+        // when
+        final ResultActions actions =
+                mvc.perform(get("/api/v1/products/{idx}", idx));
+
+        // then
+        actions
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.idx").value(1L))
+                .andExpect(jsonPath("$.name").value("베베숲 물티슈"))
+                .andExpect(jsonPath("$.description").value("베베숲 물티슈 설명"))
+                .andDo(print());
+    }
+
+    @Test
+    void insertProduct() throws Exception {
+        // given
+        when(itemProductService.insertProduct(any())).thenReturn(1);
+
+        // when
+        final ResultActions actions =
+                mvc.perform(post("/api/v1/products")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON)
+                        .characterEncoding("UTF-8")
+                        .content("{" +
+                                        "\"resultCount\" : 1" +
+                                "}"));
+
+        // then
+        verify(itemProductService).insertProduct(any());
+        actions
+                .andExpect(status().isCreated())
+                .andExpect(jsonPath("resultCount").value(1))
+                .andDo(print());
+    }
+
+    @Test
+    void updateProduct() throws Exception {
+        // given
+        when(itemProductService.updateProduct(any())).thenReturn(1);
+
+        // when
+        final ResultActions actions =
+                mvc.perform(put("/api/v1/products")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON)
+                        .characterEncoding("UTF-8")
+                        .content("{" +
+                                "\"resultCount\" : 1" +
+                                "}"));
+
+        // then
+        verify(itemProductService).updateProduct(any());
+        actions
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("resultCount").value(1))
+                .andDo(print());
+    }
+
+    @Test
+    void deleteProduct() throws Exception {
+        // given
+        when(itemProductService.deleteProduct(any())).thenReturn(1);
+
+        // when
+        final ResultActions actions =
+                mvc.perform(delete("/api/v1/products/{idx}", 1L)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON)
+                        .characterEncoding("UTF-8")
+                        .content("{" +
+                                    "\"resultCount\" : 1" +
+                                "}"));
+
+        // then
+        verify(itemProductService).deleteProduct(any());
+        actions
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("resultCount").value(1))
+                .andDo(print());
+    }
 }
