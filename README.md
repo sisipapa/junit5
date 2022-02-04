@@ -2,10 +2,10 @@
 Junit 4는 단일 모듈로 구성되어 있고 JUnit 5는 Junit Jupiter, JUnit plateform,  JUnit Vintage모듈로 구성된다.    
 Junit Platform : 테스트들을 실행하기 위한 뼈대이다. 테스트를 발견하고 테스트 계획을 생성하는 TestEngine 인터페이스를 가지고 있다. Platform은 TestEngine을 통해서 테스트를 발견하고, 실행하고, 결과를 보고한다. 또한 콘솔출력, 각종 IDE들의 연동을 보조하는 역할을 한다.  
 Junit Jupiter : TestEngine의 실제 구현체는 별도 모듈의 역할을 한다. 모듈 중 하나가 jupiter-engine이다. 이 모듈은 jupiter-api를 사용해서 작성한 테스트 코드를 발견하고 실행한다.    
-Junit Vintage : 기존에 JUnit 4 버전으로 작성한 테스트 코드를 실행할 때에는 vintage-engine 모듈을 사용한다.  
+Junit Vintage : 기존에 JUnit 4 버전으로 작성한 테스트 코드를 실행할 때에는 vintage-engine 모듈을 사용한다.
 
 ## Springboot Junit5 단위테스트
-그동안 Controller, Service, Repository(mapper) 단위테스트를 할 때 SpringBootTest 어노테이션을 붙여서 단위테스트를 진행했었다. 최근에 TDD에 대한 정리를 하다가 Junit5에 대한 정리를 해봐야 겠다는 생각을 하게 되었고 오랜만에 노트를 작성하게 되었다. 오늘은 Controller, Service, Repository 별로 단위테스트를 위한 나만의 최적화를 찾아보려고 한다.  
+그동안 Controller, Service, Repository(mapper) 단위테스트를 할 때 SpringBootTest 어노테이션을 붙여서 단위테스트를 진행했었다. 최근에 TDD에 대한 정리를 하다가 Junit5에 대한 정리를 해봐야 겠다는 생각을 하게 되었고 오랜만에 노트를 작성하게 되었다. 오늘은 Controller, Service, Repository 별로 단위테스트를 위한 나만의 최적화를 찾아보려고 한다.
 
 ## JPA Repository Junit5 테스트
 ```java
@@ -164,39 +164,39 @@ class ProductMapperTest {
 }
 ```  
 
-### @ExtendWith(MockitoExtension.class)  
-- Spring에서 Mockito를 사용하기 위해서는 @ExtendWith(MockitoExtention.class) 를 테스트 클래스 상단에 지정해주면 된다.   
-- @Mock 어노테이션을 통해 간단하게 Mock 객체를 만들어 사용할 수 있다.  
+### @ExtendWith(MockitoExtension.class)
+- Spring에서 Mockito를 사용하기 위해서는 @ExtendWith(MockitoExtention.class) 를 테스트 클래스 상단에 지정해주면 된다.
+- @Mock 어노테이션을 통해 간단하게 Mock 객체를 만들어 사용할 수 있다.
 
-### @DataJpaTest  
-- @DataJpaTest 어노테이션은 Full-Auto Config를 하지 않고 JPA 관련 테스트 설정을 로드한다.   
-- @DataJpaTest는 기본적으로 @Entity 어노테이션이 적용된 클래스를 스캔하여 스프링 데이터 JPA 저장소를 구성한다.      
+### @DataJpaTest
+- @DataJpaTest 어노테이션은 Full-Auto Config를 하지 않고 JPA 관련 테스트 설정을 로드한다.
+- @DataJpaTest는 기본적으로 @Entity 어노테이션이 적용된 클래스를 스캔하여 스프링 데이터 JPA 저장소를 구성한다.
 
-### @Mock  
-- Mock은 가짜객체를 만드는데 스프링빈에 등록이 안되는 객체이다.   
-- 스프링 컨테이너가 DI를 하는 방식이 아니라 객체생성시 생성자에 Mock객체를 직접 주입한다.   
-- 스프링을 띄우지 않으므로 MockBean을 사용할때보다 빠르다.  
+### @Mock
+- Mock은 가짜객체를 만드는데 스프링빈에 등록이 안되는 객체이다.
+- 스프링 컨테이너가 DI를 하는 방식이 아니라 객체생성시 생성자에 Mock객체를 직접 주입한다.
+- 스프링을 띄우지 않으므로 MockBean을 사용할때보다 빠르다.
 
-### @MockBean  
-- MockBean은 가짜 Bean을 스프링에 등록된다.   
-- 스프링 컨테이너가 기존에 갖고있는 Bean객체는 MockBean객체로 치환되어 DI된다.  
+### @MockBean
+- MockBean은 가짜 Bean을 스프링에 등록된다.
+- 스프링 컨테이너가 기존에 갖고있는 Bean객체는 MockBean객체로 치환되어 DI된다.
 
-### when~thenReturn VS given~willReturn  
-- BDDMockito가 제공하는 기능과 Mockito가 제공하는 기능은 동일하다.  
-- BDD라는 것을 테스트 코드에 도입할 때 기존의 Mockito가 가독성을 해치기 때문에 이를 해결하기 위해 기능은 같지만 이름만 다른 클래스라고 생각해도 될 것 같다.  
+### when~thenReturn VS given~willReturn
+- BDDMockito가 제공하는 기능과 Mockito가 제공하는 기능은 동일하다.
+- BDD라는 것을 테스트 코드에 도입할 때 기존의 Mockito가 가독성을 해치기 때문에 이를 해결하기 위해 기능은 같지만 이름만 다른 클래스라고 생각해도 될 것 같다.
 
 ### Mockito.verify
-- verify(mock).method(param) : 해당 Mock Object 의 메소드를 호출했는지 검증 ex) verify(mock).get(0);  
-- verify(mock, times(wantedNumberOfInvocations)).method(param) : 해당 Mock Object 의 메소드가 정해진 횟수만큼 호출됬는지 검증 ex) verify(mock, times(2)).get(anyInt());  
-- verify(mock, atLeast(minNumberOfInvocations)).method(param) : 해당 Mock Object 의 메소드가 최소 정해진 횟수만큼 호출됬는지 검증 ex) verify(mock, atLeast(1)).get(anyInt());  
-- verify(mock, atLeastOnce()).method(param) : 해당 Mock Object 의 메소드가 최소 한번 호출됬는지 검증 ex) verify(mock, atLeastOnce()).get(anyInt());  
-- verify(mock, atMost(maxNumberOfInvocations)).method(param) : 해당 Mock Object 의 메소드가 정해진 횟수보다 적게 호출됬는지 검증 ex) verify(mock, atMost(2)).get(anyInt());  
+- verify(mock).method(param) : 해당 Mock Object 의 메소드를 호출했는지 검증 ex) verify(mock).get(0);
+- verify(mock, times(wantedNumberOfInvocations)).method(param) : 해당 Mock Object 의 메소드가 정해진 횟수만큼 호출됬는지 검증 ex) verify(mock, times(2)).get(anyInt());
+- verify(mock, atLeast(minNumberOfInvocations)).method(param) : 해당 Mock Object 의 메소드가 최소 정해진 횟수만큼 호출됬는지 검증 ex) verify(mock, atLeast(1)).get(anyInt());
+- verify(mock, atLeastOnce()).method(param) : 해당 Mock Object 의 메소드가 최소 한번 호출됬는지 검증 ex) verify(mock, atLeastOnce()).get(anyInt());
+- verify(mock, atMost(maxNumberOfInvocations)).method(param) : 해당 Mock Object 의 메소드가 정해진 횟수보다 적게 호출됬는지 검증 ex) verify(mock, atMost(2)).get(anyInt());
 - verify(mock, never()).method(param) : 해당 Mock Object 의 메소드가 호출이 안됬는지 검증 ex) verify(mock, never()).get(2);
 
-> JPA에서 실제 데이터베이스와 연결해서 단위테스트를 해보고 싶은 경우 @DataJpaTest @Autowired private ItemRepository itemRepository 주석을 풀고 적용할 수 있다.   
+> JPA에서 실제 데이터베이스와 연결해서 단위테스트를 해보고 싶은 경우 @DataJpaTest @Autowired private ItemRepository itemRepository 주석을 풀고 적용할 수 있다.
 
 ## Service Junit5 테스트
-@InjectMocks 어노테이션을 사용해서 @Spy,@Mock 어노테이션이 붙은 객체들을 주입시켜준다. 아래 예제에서는 ItemRepository,ProductMapper 객체에 @Mock 어노테이션을 붙이고 ItemProductService 객체에 @InjectMocks 어노테이션을 붙여 Mock을 주입해 주었다.  
+@InjectMocks 어노테이션을 사용해서 @Spy,@Mock 어노테이션이 붙은 객체들을 주입시켜준다. 아래 예제에서는 ItemRepository,ProductMapper 객체에 @Mock 어노테이션을 붙이고 ItemProductService 객체에 @InjectMocks 어노테이션을 붙여 Mock을 주입해 주었다.
 
 ```java
 import com.sisipapa.junit.domain.Item;
@@ -351,7 +351,7 @@ public class ItemProductServiceTest {
 ```  
 
 ### @InjectMock
-@InjectMock은 DI를 @Mock이나 @Spy로 생성된 mock 객체를 자동으로 주입해주는 어노테이션이다.  
+@InjectMock은 DI를 @Mock이나 @Spy로 생성된 mock 객체를 자동으로 주입해주는 어노테이션이다.
 
 ## Controller Junit5 테스트
 ```java
@@ -409,14 +409,14 @@ public class ItemProductControllerTest {
         // when
         final ResultActions actions =
                 mvc.perform(post("/api/v1/item")
-                                .contentType(MediaType.APPLICATION_JSON)
-                                .accept(MediaType.APPLICATION_JSON)
-                                .characterEncoding("UTF-8")
-                                .content("{" +
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON)
+                        .characterEncoding("UTF-8")
+                        .content("{" +
 //                                        "\"idx\" : \"1\"," +
-                                        "\"name\" : \"신상품1\"," +
-                                        "\"description\" : \"신상품1 설명\"" +
-                                        "}"));
+                                "\"name\" : \"신상품1\"," +
+                                "\"description\" : \"신상품1 설명\"" +
+                                "}"));
 
         // then
         verify(itemProductService).itemSave(any());
@@ -489,7 +489,7 @@ public class ItemProductControllerTest {
                         .accept(MediaType.APPLICATION_JSON)
                         .characterEncoding("UTF-8")
                         .content("{" +
-                                        "\"resultCount\" : 1" +
+                                "\"resultCount\" : 1" +
                                 "}"));
 
         // then
@@ -535,7 +535,7 @@ public class ItemProductControllerTest {
                         .accept(MediaType.APPLICATION_JSON)
                         .characterEncoding("UTF-8")
                         .content("{" +
-                                    "\"resultCount\" : 1" +
+                                "\"resultCount\" : 1" +
                                 "}"));
 
         // then
@@ -548,5 +548,24 @@ public class ItemProductControllerTest {
 }
 ```  
 
+### @WebMvcTest
+컨트롤러를 테스트 하기 위한 어노테이션으로 Security,Filter까지 자동으로 테스트하고 수동으로 추가/삭제가 가능하다. @SpringBootTest 어노테이션보다 가볍게 테스트 할 수 있다.  
+@WebMvcTest 어노테이션이 스캔하는 대상은 [Spring 공식 Document 문서](https://docs.spring.io/spring-boot/docs/current/reference/html/test-auto-configuration.html#test-auto-configuration)에서 확인이 가능하다.
 
-[시시파파 정리노트](https://sisipapa.github.io/blog/2022/02/03/Springboot-Junit5/)
+### MockMvc
+MockMvc는 웹 어플리케이션을 애플리케이션 서버에 배포하지 않고 테스트용 MVC환경을 만들어 요청 및 전송, 응답기능을 제공해주는 유틸리티 클래스다.
+
+### perform()
+MockMvc 클래스의 perform() 메소드를 사용하면 브라우저에서 서버에 URL 요청을 하듯 컨트롤러를 실행시킬 수 있다. perform() 메소드는 RequestBuilder 객체를 인자로 받고, 이는 MockMvcRequestBuilders의 정적 메소드를 이용해서 생성한다.
+
+### MockMvcRequestBuilders
+MvckMvcRequestBuilders의 메소드들은 GET, POST, PUT, DELETE 요청 방식과 매핑되는 get(), post(), put(), delete() 메소드를 제공한다. 이 메소드들은 MockHttpServletRequestBuilder 객체를 리턴하고, HTTP 요청 관련 정보(파라미터, 헤더, 쿠키 등)를 설정할 수 있다. MockHttpServletRequestBuilder의 메소드는 MockHttpServletRequestBuilder 객체를 다시 리턴하여 메시지 체인을 구성하여 복잡한 요청을 설정할 수도 있다.
+
+### andExpect()
+perform() 메소드를 이용하여 요청을 전송하면, 그 결과로 ResultActions 객체를 리턴하는데 이 객체는 응답 결과를 검증할 수 있는 andExpect() 메소드를 제공한다. andExpect()가 요구하는 ResultMatcher는 MockMvcResultMatchers에 정의된 정적 메소드를 통해 생성할 수 있다.
+
+### andDo()
+인수에 실행 결과를 처리할 수 있는 ResultHandler 지정한다. 스프링 테스트는 MockMvc ResultHandler의 팩토리 클래스를 통해 다양한 ResultHandler 제공한다.
+
+### print()
+실행결과를 임의의 출력대상에 출력한다. 출력대상을 지정하지 않으면 기본으로 System.out 출력한다.
