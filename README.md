@@ -568,4 +568,6 @@ perform() 메소드를 이용하여 요청을 전송하면, 그 결과로 Result
 인수에 실행 결과를 처리할 수 있는 ResultHandler 지정한다. 스프링 테스트는 MockMvc ResultHandler의 팩토리 클래스를 통해 다양한 ResultHandler 제공한다.
 
 ### print()
-실행결과를 임의의 출력대상에 출력한다. 출력대상을 지정하지 않으면 기본으로 System.out 출력한다.
+실행결과를 임의의 출력대상에 출력한다. 출력대상을 지정하지 않으면 기본으로 System.out 출력한다.  
+
+[SISIPAPA 정리노트](https://sisipapa.github.io/blog/2022/02/03/Springboot-Junit5/)
